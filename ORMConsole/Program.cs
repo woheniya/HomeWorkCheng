@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ORMBLL;
+using System;
 
 namespace ORMConsole
 {
@@ -6,7 +7,15 @@ namespace ORMConsole
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            ShowData showData = new ShowData();
+            //showData.FindUser();
+            //showData.FindCompany();
+
+            //showData.FindUserList();
+            //showData.FindCompanyList();
+            showData.InsertCompanyRows();
         }
+
+        
     }
 }
