@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ORMHomeWork_1
+namespace ORMConsole
 {
     class Program
     {
