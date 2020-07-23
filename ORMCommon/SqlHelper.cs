@@ -83,7 +83,7 @@ namespace ORMCommon
                     }
                 }
             }
-            return (T)objType;
+            return default;
         }
         #endregion
 
