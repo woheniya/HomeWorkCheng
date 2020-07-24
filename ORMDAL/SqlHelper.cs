@@ -135,40 +135,130 @@ namespace ORMDAL
             for (int i = 0; i < t.Count; i++)
             {
                 sql += "(";
-                foreach (PropertyInfo info in type.GetProperties())
+                for (int j = 0; j < type.GetProperties().Length - 1; j++)
                 {
                     if (i == t.Count - 1)
                     {
-                        if (info.PropertyType.Name == DataType.String.ToString())
+                        if (type.GetProperties()[j].PropertyType.Name == DataType.String.ToString())
                         {
-                            sql += "'" + info.GetValue(t[i], null) + "'" + ")";
+                            sql += "'" + type.GetProperties()[j].GetValue(t[i], null) + "'" + ")";
                         }
                         //如何得到实体的值？？？info.GetValue(t, null)
-                        else if (info.PropertyType.Name == DataType.DateTime.ToString())
+                        else if (type.GetProperties()[j].PropertyType.Name == DataType.DateTime.ToString())
                         {
-                            sql += "'" + info.GetValue(t[i], null) + "'" + ")";
+                            sql += "'" + type.GetProperties()[j].GetValue(t[i], null) + "'" + ")";
                         }
-                        else if (info.PropertyType.Name == DataType.Int32.ToString())
+                        else if (type.GetProperties()[j].PropertyType.Name == DataType.Int32.ToString())
                         {
-                            sql += info.GetValue(t[i], null) + ")";
+                            sql += type.GetProperties()[j].GetValue(t[i], null) + ")";
                         }
                     }
                     else
                     {
-                        if (info.PropertyType.Name == DataType.String.ToString())
+                        if (type.GetProperties()[j].PropertyType.Name == DataType.String.ToString())
                         {
-                            sql += "'" + info.GetValue(t[i], null) + "'" + "),";
+                            sql += "'" + type.GetProperties()[j].GetValue(t[i], null) + "'" + "),";
                         }
                         //如何得到实体的值？？？info.GetValue(t, null)
-                        else if (info.PropertyType.Name == DataType.DateTime.ToString())
+                        else if (type.GetProperties()[j].PropertyType.Name == DataType.DateTime.ToString())
                         {
-                            sql += "'" + info.GetValue(t[i], null) + "'" + "),";
+                            sql += "'" + type.GetProperties()[j].GetValue(t[i], null) + "'" + "),";
                         }
-                        else if (info.PropertyType.Name == DataType.Int32.ToString())
+                        else if (type.GetProperties()[j].PropertyType.Name == DataType.Int32.ToString())
                         {
-                            sql += info.GetValue(t[i], null) + "),";
+                            sql += type.GetProperties()[j].GetValue(t[i], null) + "),";
                         }
                     }
+
+                }
+            }
+
+            return default;
+            //return ExcuteSql(sql) > 0 ? true : false;
+        }
+        #endregion
+
+        #region 泛型的数据库实体插入
+        /// <summary>
+        /// 插入
+        //UPDATE categories
+        //     SET display_order = CASE id
+        //         WHEN 1 THEN 3
+        //         WHEN 2 THEN 4
+        //         WHEN 3 THEN 5
+        //     END,
+        //     title = CASE id
+        //         WHEN 1 THEN 'New Title 1'
+        //         WHEN 2 THEN 'New Title 2'
+        //         WHEN 3 THEN 'New Title 3'
+        //     END
+        //WHERE id IN(1,2,3)
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        public static bool UpdateRows<T>(List<T> t)
+        {
+            Type type = typeof(T);
+            string sql = $"Update {type.Name} set(";
+
+            //string sql = $"Insert into ({string.Join(",", type.GetProperties().Select(p => p.Name))}) values()]";
+
+            IEnumerable<string> tNameList = type.GetProperties().Select(p => p.Name);
+
+            List<string> list = tNameList.ToList();
+            list.RemoveAt(list.Count - 1);
+
+            foreach (string name in list)
+            {
+                if (name == list.Last())
+                {
+                    sql += name + ") Values";
+                }
+                else
+                {
+                    sql += name + ",";
+                }
+            }
+
+            for (int i = 0; i < t.Count; i++)
+            {
+                sql += "(";
+                for (int j = 0; j < type.GetProperties().Length - 1; j++)
+                {
+                    if (i == t.Count - 1)
+                    {
+                        if (type.GetProperties()[j].PropertyType.Name == DataType.String.ToString())
+                        {
+                            sql += "'" + type.GetProperties()[j].GetValue(t[i], null) + "'" + ")";
+                        }
+                        //如何得到实体的值？？？info.GetValue(t, null)
+                        else if (type.GetProperties()[j].PropertyType.Name == DataType.DateTime.ToString())
+                        {
+                            sql += "'" + type.GetProperties()[j].GetValue(t[i], null) + "'" + ")";
+                        }
+                        else if (type.GetProperties()[j].PropertyType.Name == DataType.Int32.ToString())
+                        {
+                            sql += type.GetProperties()[j].GetValue(t[i], null) + ")";
+                        }
+                    }
+                    else
+                    {
+                        if (type.GetProperties()[j].PropertyType.Name == DataType.String.ToString())
+                        {
+                            sql += "'" + type.GetProperties()[j].GetValue(t[i], null) + "'" + "),";
+                        }
+                        //如何得到实体的值？？？info.GetValue(t, null)
+                        else if (type.GetProperties()[j].PropertyType.Name == DataType.DateTime.ToString())
+                        {
+                            sql += "'" + type.GetProperties()[j].GetValue(t[i], null) + "'" + "),";
+                        }
+                        else if (type.GetProperties()[j].PropertyType.Name == DataType.Int32.ToString())
+                        {
+                            sql += type.GetProperties()[j].GetValue(t[i], null) + "),";
+                        }
+                    }
+
                 }
             }
 
